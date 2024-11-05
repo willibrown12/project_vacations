@@ -6,7 +6,7 @@ import { userType } from "../../register";
 
 
 
-type loginRoleType={authentication:boolean, role?:string ,full_name?:string}
+type loginRoleType={authentication:boolean, role?:string ,full_name?:string,idUser?:number}
 
 export async function loginUser( user: loginType): Promise<loginRoleType> {
   
@@ -21,7 +21,7 @@ export async function loginUser( user: loginType): Promise<loginRoleType> {
     const storedHashedPassword = result[0].password;
     const isPasswordValid = await bcrypt.compare(user.password, storedHashedPassword);
     const fullName =result[0].first_name+" "+result[0].last_name;
-    return {authentication:isPasswordValid, role:result[0].role,full_name:fullName};
+    return {authentication:isPasswordValid, role:result[0].role,full_name:fullName ,idUser:result[0].id};
 }
 
 

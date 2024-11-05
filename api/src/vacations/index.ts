@@ -1,10 +1,15 @@
 import express from "express";
-import { getVacations } from "./handlers/getVacations";
+
 import { createVacation } from "./handlers/createVacation";
 import { deleteVacation } from "./handlers/deleteVacation";
 import { updateVacation } from "./handlers/updateVacation";
 import { z } from "zod";
 import { isAdmin } from "../middleware/isadmin";
+import { jwtDecode } from "jwt-decode";
+import { TokenPayload } from "../followers";
+import getTokenFromHeaders from "../middleware/handlers/getTokenFromHeader";
+import { getVacations } from "./handlers/getVacations";
+import { filterVacation } from "./handlers/filtervacation";
 
 const router = express.Router();
 
@@ -17,21 +22,18 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// router.get("/filter", async (req, res, next) => {
-//   try {
-//     const queryParams = req.query;
-//     const { job_title, city, country_region } = queryParams;
-//     const data = await searchCustomers({
-//       job_title,
-//       city,
-//       country_region,
-//     } as any);
-//     res.json({ customers: data });
-//   } catch (error) {
-//     console.log(error);
-//     res.send("Something went wrong");
-//   }
-// });
+router.get("/filter/:value", async (req, res, next) => {
+  try {
+    const token = getTokenFromHeaders(req);
+    const decoded :TokenPayload= jwtDecode(token);
+    const queryParams = req.params.value;
+    const data = await filterVacation(queryParams,decoded.idUser);
+    res.json({ vacations: data });
+  } catch (error) {
+    console.log(error);
+    res.send("Something went wrong");
+  }
+});
 
 
 
@@ -95,14 +97,15 @@ export type VacationType = {
   start_date: Date;
   end_date: Date;
   price: number,
+  followers_count:number
   image_url: string
 
 }
 
 
 function extractVacation(body: any): VacationType {
-  const { id, country, city, description, start_date, end_date, price, image_url } = body;
-  return { id, country, city, description, start_date, end_date, price, image_url };
+  const { id, country, city, description, start_date, end_date, price,followers_count, image_url } = body;
+  return { id, country, city, description, start_date, end_date, price,followers_count, image_url };
 }
 
 
@@ -114,6 +117,7 @@ const startScheme = z.string();
 const endScheme = z.string();
 const priceScheme = z.number()
 const ImageScheme = z.string().url()
+const followersScheme = z.number()
 
 const newVacationSchema = z.object({
 
@@ -124,6 +128,7 @@ const newVacationSchema = z.object({
   start_date: startScheme,
   end_date: endScheme,
   price: priceScheme,
+  followers_count:followersScheme,
   image_url: ImageScheme
 
 })

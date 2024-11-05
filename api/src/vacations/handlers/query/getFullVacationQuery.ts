@@ -4,11 +4,11 @@ export function getFullVacationQuery(): string {
     COUNT(followers.iduser) AS followers_count
 FROM 
     vacations.locations
-JOIN 
+LEFT JOIN 
     vacations.followers 
 ON 
     vacations.locations.id = vacations.followers.idlocation
 GROUP BY 
-    vacations.locations.id;   `
+    vacations.locations.id;  `
     return query;
 }

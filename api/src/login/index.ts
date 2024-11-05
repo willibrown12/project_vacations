@@ -20,8 +20,8 @@ router.post("/",  async (req: Request, res: Response, next) => {
             return res.status(401).json({ message: "email or passwords are incorrect" })
         } else {
             
-            const token = jwt.sign({ role:result.role , fullName:result.full_name}, process.env.SECRET as string, {
-                expiresIn:"10h",
+            const token = jwt.sign({ role:result.role , fullName:result.full_name ,idUser:result.idUser}, process.env.SECRET as string, {
+                expiresIn:'10h',
               });
             return res.status(200).json({ message: "user logged In successfully!", token })
         }

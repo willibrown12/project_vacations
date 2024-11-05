@@ -16,6 +16,7 @@ import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { useAuth, useUserContext } from '../../../context';
+import { jwtDecode } from 'jwt-decode';
 const pages = ['home', 'vacations', 'about us'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -28,17 +29,35 @@ function ResponsiveAppBar() {
   
 
   const navigate = useNavigate();
-  const { token } = useAuth(); 
+  const { token ,setToken} = useAuth(); 
   const { fullName  } = useUserContext();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   
   useEffect(() => {
-    setIsLoggedIn(!!token);
-  }, [token]);
+    const checkTokenExpiration = () => {
+      if (!token) {
+        setIsLoggedIn(false);
+        return;
+      }
 
+      try {
+        const decoded: any = jwtDecode(token);
+        const isExpired = decoded.exp * 1000 < Date.now();
+        if (isExpired) {
+          setToken(null); 
+        } else {
+          setIsLoggedIn(true); 
+        }
+      } catch (error) {
+       
+        setToken(null); 
+      }
+    };
 
+    checkTokenExpiration();
+  }, [token, setToken]);
   
 
 
@@ -60,9 +79,11 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+
+
   return (
-   
-    <AppBar elevation={0} position="sticky">
+   <>
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -112,7 +133,10 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page}  onClick={() => {
+                  handleCloseNavMenu();
+                  navigate(`/${page.replace(/ /g,"")}`);
+                }}>
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                 </MenuItem>
               ))}
@@ -191,8 +215,11 @@ function ResponsiveAppBar() {
           </Box>:<Box sx={{ flexGrow: 0, display:"flex", alignItems:"center" , gap:2 , width:"200px"}}><Button  onClick={() => navigate('login')} color="inherit">Login</Button><Button  onClick={() => navigate('register')} color="inherit">register</Button></Box>}
         </Toolbar>
       </Container>
-      <Outlet />
     </AppBar>
+    <Box >
+    <Outlet />
+  </Box>
+  </>
   );
 }
 export default ResponsiveAppBar;

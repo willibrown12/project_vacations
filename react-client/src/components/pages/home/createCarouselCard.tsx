@@ -14,7 +14,7 @@ export default function MediaCard(data :homeCardUI) {
     <div  className="slick-slide">
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
-        sx={{ height: 140 }}
+        sx={{ width:250, height: 140 }}
        
         
         image= {data.image_url}

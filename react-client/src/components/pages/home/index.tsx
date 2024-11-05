@@ -79,13 +79,51 @@ export function Home() {
         `Slider Changed to: ${index + 1}, background: #222; color: #bada55`
       );
     },
+    responsive: [
+      {
+        breakpoint: 2500, // width to change options
+        settings: {
+          slidesToShow: 5,
+          slidesToScroll: 5,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 1800, // width to change options
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 1024, // width to change options
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      }
+    ]
   };
 
   return (
     <Grid
       container
-     
+    
       sx={{
+        
         paddingTop:"50px",
         paddingBottom:"50px",
        gap:4,
@@ -99,7 +137,8 @@ export function Home() {
     >
     
     {isLoggedIn?"":<Grid
-        md={10}
+          xs={12} md={10}
+        item
         sx={{
           marginTop:"50px",
         
@@ -126,7 +165,8 @@ export function Home() {
         
       </Grid>}
       <Grid
-        md={10}
+      item
+      xs={12} md={10}
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -136,15 +176,17 @@ export function Home() {
         <div style={{ width: "100%", maxWidth: "90%"}}>
           <h1>Popular places</h1>
           <Slider {...settings}>
-          {homeCards.map(c=>MediaCard(c))}
-          </Slider>
+      {homeCards.map((c) => (
+        <MediaCard key={c.image_url} {...c} />
+      ))}
+    </Slider>
           <div style={{display:"flex" ,width: "100%", justifyContent:"flex-end"}}>
           <Button  onClick={() => navigate('go to vacations')} >go to vacations</Button>
           </div>
         </div>
         
       </Grid>
-      <Grid md={10} sx={{justifyContent: "center",alignItems: "center",display:"flex"}}>
+      <Grid   xs={12} md={10}  item sx={{justifyContent: "center",alignItems: "center",display:"flex"}}>
       
       <Card
       size="lg"
@@ -154,7 +196,7 @@ export function Home() {
         height: "100%",
         textAlign: 'center',
         maxWidth: '100%',
-        width: 600,
+       
        
       }}
     >

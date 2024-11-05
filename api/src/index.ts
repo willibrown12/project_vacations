@@ -5,7 +5,7 @@ import { router as loginRouter } from "./login"
 import { router as registerRouter } from "./register"
 import { router as vacationsRouter } from "./vacations"
 import { router as homepageRouter } from "./home"
-
+import { router as followersRouter } from "./followers"
 
 import bodyParser from "body-parser"
 import cors from "cors"
@@ -38,7 +38,7 @@ app.use(authenticate);
 
 
 app.use("/vacations", vacationsRouter)
-
+app.use("/followers", followersRouter)
 
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {

@@ -74,6 +74,8 @@ export default function LoginPage() {
 
           <Grid
             item
+           
+            xs={10} md={3}
             component={Paper}
             elevation={6}
             square
@@ -151,6 +153,7 @@ export default function LoginPage() {
 
           <Grid
             item
+            xs={10} md={3}
             container
              direction="column"
             sx={{

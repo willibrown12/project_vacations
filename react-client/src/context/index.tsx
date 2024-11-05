@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 type TokenPayload = {
     fullName: string
     role: string;
+    idUser:number
 };
 
 
@@ -14,7 +15,7 @@ type tokenType = {
 }
 
 type userType = {
-
+ 
     role: boolean,
     fullName: string
 }
@@ -28,21 +29,70 @@ export function ContextWrapper({ children }: any) {
     const [token, setTokenState] = useState<string | null>(localStorage.getItem("token"));
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [full_Name, setFullName] = useState<string>("");
+   
+ 
+    if(localStorage.getItem("token") && token===undefined){
+    const decoded: TokenPayload = jwtDecode(token);
+    setFullName(decoded.fullName);
+  }
+  
 
-
-    // Function to set the authentication token
-    function setToken (newToken: string)  {
-        setTokenState(newToken);
-        if (newToken) {
-            const decoded: TokenPayload = jwtDecode(newToken);
-           console.log(decoded.fullName);
+  useEffect(() => {
+    if (token) {
+        try {
+            const decoded: TokenPayload = jwtDecode(token);
+            setFullName(decoded.fullName); // Set the full name from the token
+            setIsAdmin(decoded.role === "admin"); // Set admin status based on the role
            
+            axios.defaults.headers.common["Authorization"] = token; // Set the Authorization header
+        } catch (error) {
+            console.error("Failed to decode token:", error);
+            // Handle error (e.g., clear token, redirect to login, etc.)
+        }
+    } else {
+        // If there is no token, clear auth-related states
+        setFullName("");
+        setIsAdmin(false);
+        
+        delete axios.defaults.headers.common["Authorization"];
+    }
+}, [token]);
+
+
+    const isTokenValid = (token: string | null): boolean => {
+        if (!token) return false;
+
+        let decodedToken;
+        try {
+            decodedToken = jwtDecode<any & { exp: number }>(token);
+        } catch (error) {
+            console.error("Failed to decode token:", error);
+            return false;
+        }
+
+        const currentDate = new Date();
+        return (decodedToken.exp * 1000) > currentDate.getTime();
+    };
+
+
+
+    const setToken = (newToken: string | null) => {
+        setTokenState(newToken);
+        
+        if (newToken && isTokenValid(newToken)) {
+            const decoded: TokenPayload = jwtDecode(newToken);
             setFullName(decoded.fullName);
-            setIsAdmin(decoded.role === "admin" );}else{
-                setFullName("");
-                setIsAdmin(false)
-            }
-         
+            setIsAdmin(decoded.role === "admin");
+            axios.defaults.headers.common["Authorization"] = newToken;
+            localStorage.setItem("token", newToken);
+        } else {
+       
+            setFullName("");
+            setIsAdmin(false);
+            delete axios.defaults.headers.common["Authorization"];
+            localStorage.removeItem("token");
+            window.location.href = "/login"; 
+        }
     };
 
 
@@ -67,7 +117,7 @@ export function ContextWrapper({ children }: any) {
     );
 
 
-    const userContextValue = { role: isAdmin, fullName: full_Name };
+    const userContextValue = { role: isAdmin, fullName: full_Name};
 
     // Provide the authentication context to the children components
     return (
