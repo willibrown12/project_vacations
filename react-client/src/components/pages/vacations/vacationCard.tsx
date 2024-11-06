@@ -8,11 +8,14 @@ import Typography from '@mui/material/Typography';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { vacationCardUI } from './vacationsList';
+import { useUserContext } from '../../../context';
 
 export default function VacationCard(props: vacationCardUI & { doSomething?: (p: vacationCardUI) => void }) {
     // Parse dates as Date objects
     const startDate = new Date(props.start_date);
     const endDate = new Date(props.end_date);
+    const {role} =useUserContext()
+
 
     return (
         <Card sx={{ 
@@ -20,8 +23,6 @@ export default function VacationCard(props: vacationCardUI & { doSomething?: (p:
             maxHeight: 550, 
             borderRadius: 2, 
             boxShadow: 3, 
-            overflow: 'hidden', 
-            position: 'relative', 
             bgcolor: "#f8f8f8"
         }}>
             <CardHeader 
@@ -30,10 +31,12 @@ export default function VacationCard(props: vacationCardUI & { doSomething?: (p:
                 subheader={props.city}
                 subheaderTypographyProps={{ color: 'white', fontSize: "0.875rem" }}
                 action={
-                    <IconButton aria-label="settings" sx={{ color: "white" }}>
+                    role ? (
+                      <IconButton aria-label="settings" sx={{ color: "white" }}>
                         <MoreVertIcon />
-                    </IconButton>
-                }
+                      </IconButton>
+                    ) : null
+                  }
             />
             <CardMedia
                 component="img"
@@ -42,18 +45,22 @@ export default function VacationCard(props: vacationCardUI & { doSomething?: (p:
                 alt={`${props.country} - ${props.city}`}
                 sx={{ objectFit: 'cover' }}
             />
-            <CardContent sx={{ padding: "16px" }}>
+            <CardContent sx={{ padding: "16px" , height: "200px"}}>
+            <Typography variant="body2" color="text.secondary">
+                    {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
+                </Typography>
                 <Typography variant="subtitle1" color="text.primary" gutterBottom>
                     {props.description}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-                </Typography>
+               
             </CardContent>
             <CardActions disableSpacing sx={{ padding: "8px 16px", borderTop: "1px solid #e0e0e0" }}>
                 <IconButton 
+                disabled={role ? true : false}
                     aria-label="add to favorites" 
                     onClick={() => {
+                        console.log(role);
+                        
                         const { doSomething, ...restOfProps } = props;
                         if (typeof props?.doSomething === "function") {
                             props?.doSomething(restOfProps);

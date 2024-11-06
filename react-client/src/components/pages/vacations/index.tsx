@@ -6,12 +6,45 @@ import Box from '@mui/material/Box';
 import RestoreIcon from '@mui/icons-material/Restore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
-import { BottomNavigation, BottomNavigationAction, CircularProgress, Grid, Pagination, Paper } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, CircularProgress, createTheme, Grid, Pagination, Paper, ThemeProvider } from "@mui/material";
 import VacationsList, { vacationCardUI } from "./vacationsList";
 import usePagination from "../../handlers/pagination";
-import HistoryIcon from '@mui/icons-material/History';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary:{
+      main: '#fff',
+    }
+  },
+  components: {
+    MuiBottomNavigation: {
+      styleOverrides: {
+        root: {
+          
+          backgroundColor: '#1976d2',
+        },
+     
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          borderRadius:"10px",
+          color:"#fff",
+          '&.Mui-selected': {
+            color: '#0009', 
+             backgroundColor: '#fff'
+          },
+        },
+      },
+    },
+  },
+});
 
 export function Vacations() {
 
@@ -22,9 +55,11 @@ export function Vacations() {
   const [isLoading, setIsLoading] = useState(true);
   const [usersFollow, setUsersFollow] = useState<Array<FollowType>>([]);
   const [followChange, setFollowChange] = useState(false);
-  const [valueFilter, SetValueFilter] = useState(0);
+  const [valueFilter, SetValueFilter] = useState(3);
   
  
+
+  
 
 
   useEffect(() => {
@@ -46,11 +81,9 @@ export function Vacations() {
       } catch (error: any) {
         console.log(error);
 
-        // 
-        // if (error?.response.data.message === "Unauthorized!") {
+    
         alert(error?.response.data.message);
-        //   setToken(null);
-        // }
+       
       } finally {
         setIsLoading(false);
       }
@@ -90,54 +123,78 @@ export function Vacations() {
 
 
   return (
+    <ThemeProvider theme={theme}>
     <Grid
       
 
       sx={{
 
         bgcolor: "white",
-
-        justifyContent: "center",
-        
         color: "black",
 
       }}
     >
       <Grid  container sx={{ alignItems:"center" , display:"flex" ,flexDirection:"column", }}>
 
-        <Grid   component={Paper} elevation={3} item xs={10} sx={{ alignItems:"center" , display:"flex" ,flexDirection:"column", pb:"2rem",mt:"2rem",borderRadius: '16px',mb:"2rem"}}>
+        <Grid   item xs={10} sx={{ alignItems:"center" , display:"flex" ,flexDirection:"column", pb:"2rem",mt:"2rem",borderRadius: '10px',mb:"2rem",width:"100%"}}>
       
         
 
 
-        
-        <Box   sx={{ width:" 100%",  }}>
+        <Grid sx={{ alignItems:"center" , display:"flex" ,flexDirection: { xs: "column",  md: "row" },width:"100%",padding:"1rem",justifyContent:"space-between" ,bgcolor:"#1976d2",borderRadius: '7px'}}>
+        <Grid >
+        <Pagination
+        sx={{ '& .MuiPaginationItem-root': {
+          color: 'white', 
+        },
+        '& .MuiPaginationItem-root.Mui-selected': {
+          color: '#0009', 
+          
+        }}}
+       color="secondary"
+        count={count}
+        size="large"
+        page={page}
+        shape="rounded"
+        onChange={handleChange}
+      />
+      </Grid>
+  
+        <Grid  item xs={12} sm={4}>
       <BottomNavigation
+      
         showLabels
         value={valueFilter}
         onChange={async (event, newValue) => {
           SetValueFilter(newValue);
-          if (newValue===2) {
+          if (newValue===3) {
             const Result: any = await SendToApiVacations(token);
+          
             setVacationsCards(Result)
+            
           }else{
             const filterResult :any=await filterdataApi(token,newValue)
             setVacationsCards(filterResult)
+            handleChange(event,1)
+            
           }
           
          
          
         }}
-      >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+       
+      ><BottomNavigationAction  label="Not started" icon={<RestoreIcon />} />
+        <BottomNavigationAction label="Active" icon={<AddTaskIcon />} />
         <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
         <BottomNavigationAction label="All" icon={<AutoAwesomeMotionIcon />} />
       </BottomNavigation>
       
-  <h1>look at f for design</h1>
-      </Box>
+      
 
-          <Box   sx={{ display: "flex", justifyContent: "center", margin: "4rem", flexWrap: "wrap", gap: "20px" }}>
+      </Grid>
+      </Grid>
+
+          <Box   sx={{ display: "flex", justifyContent:"center", marginTop: "2rem", flexWrap: "wrap", gap: "30px" , marginBottom: "2rem"}}>
             {isLoading ? <CircularProgress />
               : <VacationsList vacations={data.currentData()}
                 usersFollow={usersFollow}
@@ -161,7 +218,7 @@ export function Vacations() {
       </Grid>
       <CssBaseline />
     </Grid>
-
+    </ThemeProvider>
   );
 }
 

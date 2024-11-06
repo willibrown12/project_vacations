@@ -111,8 +111,9 @@ export type FollowType = {
 
 
 export async function filterdataApi(token: string,value:number) {
-  const sendvalue = value === 1 ? "favorites" : value === 2 ? "activeNow" : "notactive";
+  const sendvalue = value === 1 ? "active" : value === 2 ? "favorites" : "notactive";
 
+console.log(sendvalue);
 
   const url = `http://localhost:3000/vacations/filter/${sendvalue}`;
 

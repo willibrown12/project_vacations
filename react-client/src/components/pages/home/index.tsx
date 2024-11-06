@@ -181,7 +181,7 @@ export function Home() {
       ))}
     </Slider>
           <div style={{display:"flex" ,width: "100%", justifyContent:"flex-end"}}>
-          <Button  onClick={() => navigate('go to vacations')} >go to vacations</Button>
+          <Button  onClick={() => navigate('/vacations')} >go to vacations</Button>
           </div>
         </div>
         
