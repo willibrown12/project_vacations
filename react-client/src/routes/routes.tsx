@@ -8,6 +8,7 @@ import ResponsiveAppBar from "../components/pages/root/root";
 import LoginPage from "../components/pages/login";
 import { ProtectedRoute } from "./protectedRoutes";
 import Logout from "../components/pages/logout";
+import VacationForm from "../components/pages/vacationsEdit";
 
 
 
@@ -53,7 +54,13 @@ export function RoutesArray(){
         {
             path: "/logout",
             element:  <Logout />,
-          },
+          }, 
+           {
+            path: "Vacations/edit",
+            label: "Vacations_edit",
+            element: <VacationForm />
+           
+        },
       ],
     },
   ];

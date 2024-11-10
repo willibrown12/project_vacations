@@ -5,11 +5,9 @@ import { deleteVacation } from "./handlers/deleteVacation";
 import { updateVacation } from "./handlers/updateVacation";
 import { z } from "zod";
 import { isAdmin } from "../middleware/isadmin";
-import { jwtDecode } from "jwt-decode";
-import { TokenPayload } from "../followers";
-import getTokenFromHeaders from "../middleware/handlers/getTokenFromHeader";
 import { getVacations } from "./handlers/getVacations";
-import { filterVacation } from "./handlers/filtervacation";
+import { log } from "console";
+
 
 const router = express.Router();
 
@@ -18,19 +16,6 @@ router.get("/", async (req, res, next) => {
     const data = await getVacations();
     res.json({ vacations: data });
   } catch (error) {
-    res.send("Something went wrong");
-  }
-});
-
-router.get("/filter/:value", async (req, res, next) => {
-  try {
-    const token = getTokenFromHeaders(req);
-    const decoded :TokenPayload= jwtDecode(token);
-    const queryParams = req.params.value;
-    const data = await filterVacation(queryParams,decoded.idUser);
-    res.json({ vacations: data });
-  } catch (error) {
-    console.log(error);
     res.send("Something went wrong");
   }
 });
@@ -69,8 +54,11 @@ router.delete("/:idToDelete", isAdmin, async (req, res, next) => {
 });
 
 router.put("/:idToUpdate", isAdmin, async (req, res, next) => {
+ 
+  
   try {
     newVacationSchema.parse(req.body)
+
 
     const vacationToUpdate = extractVacation(req.body);
     console.log(vacationToUpdate, req.params.idToUpdate);
@@ -78,7 +66,7 @@ router.put("/:idToUpdate", isAdmin, async (req, res, next) => {
       +req.params.idToUpdate,
       vacationToUpdate
     );
-    res.json({ affectedRows });
+    res.json({ message:affectedRows });
   } catch (error) {
     console.log((error as any).message);
     res.send("Something went wrong");
@@ -97,27 +85,27 @@ export type VacationType = {
   start_date: Date;
   end_date: Date;
   price: number,
-  followers_count:number
+ 
   image_url: string
 
 }
 
 
 function extractVacation(body: any): VacationType {
-  const { id, country, city, description, start_date, end_date, price,followers_count, image_url } = body;
-  return { id, country, city, description, start_date, end_date, price,followers_count, image_url };
+  const { id, country, city, description, start_date, end_date, price, image_url } = body;
+  return { id, country, city, description, start_date, end_date, price, image_url };
 }
 
 
 const idVacationScheme = z.number().optional()
 const countryScheme = z.string()
 const cityScheme = z.string()
-const descriptionScheme = z.string().min(5).max(100)
+const descriptionScheme = z.string().min(1).max(500)
 const startScheme = z.string();
 const endScheme = z.string();
 const priceScheme = z.number()
 const ImageScheme = z.string().url()
-const followersScheme = z.number()
+
 
 const newVacationSchema = z.object({
 
@@ -128,7 +116,6 @@ const newVacationSchema = z.object({
   start_date: startScheme,
   end_date: endScheme,
   price: priceScheme,
-  followers_count:followersScheme,
   image_url: ImageScheme
 
 })

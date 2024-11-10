@@ -36,10 +36,9 @@ export function Logout  () {
       }
   }
   >
-    <CssBaseline />
-   <h1>remember to edit the nav bar between jumps</h1>
+    
   </Grid>
- 
+  <CssBaseline />
 </ThemeProvider>
 };
 

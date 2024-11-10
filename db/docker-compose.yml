@@ -1,5 +1,11 @@
 
 services:
+  mongodb_container:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - my-db:/data/db   
   db:
     image: mysql:8.0
     restart: always
