@@ -1,4 +1,4 @@
-import { getConnection } from "../../database";
+import { getConnection } from "../../database/connection";
 import { getFullVacationQuery } from "./query/getFullVacationQuery";
 
 

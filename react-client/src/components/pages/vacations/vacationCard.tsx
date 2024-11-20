@@ -11,7 +11,7 @@ import { useUserContext } from '../../../context';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 export default function VacationCard(props: vacationCardUI & { doSomething?: (p: vacationCardUI) => void } & { doSomethingAdmin?: (p: vacationCardUI) => void }) {
-    // Parse dates as Date objects
+ 
     const startDate = new Date(props.start_date);
     const endDate = new Date(props.end_date);
     const { role } = useUserContext()

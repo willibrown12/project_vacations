@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 export type vacationCardApi = {
-  Title: any;
+  
   id: number;
   country: string;
   city: string;
@@ -49,6 +49,8 @@ export async function SendToApiVacations(token: string) {
 
     }
   })
+  
+  
 
 
 

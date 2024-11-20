@@ -25,7 +25,7 @@ const countrySchema = z.string().min(1);
 const citySchema = z.string().min(1);
 const descriptionSchema = z.string().min(1);
 const priceSchema = z.number().min(1);
-
+const ImageScheme = z.string().url()
 
 export default function VacationForm() {
     const navigate = useNavigate();
@@ -48,6 +48,7 @@ export default function VacationForm() {
     const [description, setDescription] = useState(editVacation.description);
     const [descriptionError, setDescriptionError] = useState({ isError: false, errorMessage: "" });
     const [imageUrl, setImageUrl] = useState(editVacation.image_url);
+    const [imageError, setImageError] = useState({ isError: false, errorMessage: "" });
     const [price, setPrice] = useState<number>(+editVacation.price);
     const [priceError, setPriceError] = useState({ isError: false, errorMessage: "" });
     const [openDialog, setOpenDialog] = useState(false);
@@ -63,7 +64,21 @@ export default function VacationForm() {
             const errors = result?.error?.issues.map(e => e.message);
             setCountryError({ isError: true, errorMessage: errors.join(", ") });
         }
+
     }
+
+
+    function isImageValid() {
+        const result = ImageScheme.safeParse(country);
+        if (result.success) {
+            setImageError({ isError: false, errorMessage: "" });
+        } else {
+            const errors = result?.error?.issues.map(e => e.message);
+            setImageError({ isError: true, errorMessage: errors.join(", ") });
+        }
+        
+    }
+
 
 
 
@@ -124,7 +139,7 @@ export default function VacationForm() {
     const handleSubmit = async () => {
         try {
             setIsLoading(true);
-            await UpdateVactionApi({
+            const result= await UpdateVactionApi({
                 id: editVacation.id,
                 country: country,
                 city: city,
@@ -134,12 +149,15 @@ export default function VacationForm() {
                 price: price,
                 image_url: imageUrl
             }, token);
-          
+            console.log(result);
             navigate("/vacations");
         } catch (error: any) {
+            alert(error.message);
             console.log(error.message);
+            
         } finally {
             setIsLoading(false);
+         
         }
     };
 
@@ -177,15 +195,16 @@ export default function VacationForm() {
         backgroundSize: '100% 100%',
         backgroundPosition: 'center',
         backgroundAttachment:"fixed",
+        
         backgroundRepeat: 'no-repeat',
        
     }}
 >
  
 
-                <Grid container component="main" sx={{ bgcolor: "transparent", justifyContent: 'center', alignItems: 'center' }}>
-                    <CssBaseline />
-                    <Grid item xs={12} md={6} component={Paper} elevation={6} square sx={{ boxShadow: 3, width: "90%", maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', mt:"2rem"}}>
+                <Grid container component="main" sx={{ bgcolor: "transparent", justifyContent: 'center', alignItems: 'center' ,minHeight: '100vh' }}>
+                    
+                    <Grid item xs={12} md={6} component={Paper} elevation={6} square sx={{ boxShadow: 3, width: "90%", maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', mt:"2rem",mb:"2rem"}}>
                         <Box
                             sx={{
                                 alignItems: 'center',
@@ -251,11 +270,15 @@ export default function VacationForm() {
                                     <Button variant="contained" onClick={handleOpenDialog} color="primary" endIcon={<UploadFileIcon />}>
                                         change Image
                                     </Button>
+                                    
                                 </Box>
                                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                                     <DialogTitle>Enter Image URL</DialogTitle>
                                     <DialogContent >
                                         <TextField
+                                         onBlur={isImageValid}
+                                         helperText={imageError.errorMessage}
+                                         error={imageError.isError}
                                             sx={{ mt: "10px" }}
                                             fullWidth
                                             label="Image URL"
@@ -313,21 +336,21 @@ export default function VacationForm() {
 
 
 
-                            {/* Password Field */}
+                         
 
                             <TextField
 
                                 onBlur={isPriceValid}
                                 helperText={priceError.errorMessage}
                                 error={priceError.isError}
-                                label="price"
+                                label="price $"
                                 value={price}
                                 onChange={(e) => setPrice(+e.target.value)}
                                 fullWidth
                                 type="number"
                             />
                            <Grid container spacing={2}>
-                            {/* Submit Button */}
+                          
                             <Grid  item xs={12} sm={6}>
                             {isLoading ? (
                                 <LoadingLogin />
@@ -347,6 +370,7 @@ export default function VacationForm() {
                     </Grid>
                 </Grid>
                 </div>
+                <CssBaseline />
             </LocalizationProvider>
         </ThemeProvider>
     );

@@ -114,7 +114,7 @@ export function Vacations() {
           return c
         })
         setDisplayCards(newcards);
-        console.log(displayCards);
+   
 
       } else {
         const newcards: any = displayCards.map((c) => {
@@ -130,7 +130,7 @@ export function Vacations() {
           return c
         })
         setDisplayCards(newcards);
-        console.log(displayCards);
+      
       }
 
 
@@ -144,7 +144,9 @@ export function Vacations() {
   const count = Math.ceil(displayCards.length / PER_PAGE);
   const data = usePagination(displayCards, PER_PAGE);
 
-  const handleChange = (e: any, p: any) => {
+  const handleChange = (_e: any, p: any) => {
+    console.log();
+    
     setPage(p);
     data.jump(p);
   };
@@ -173,21 +175,30 @@ export function Vacations() {
       filterResult = VacationsCards;
     }
 
+
     if (buttonFavorites) {
       filterResult = filterResult.filter((vacation) => vacation.isFollowed);
     }
+    
+    
 
     setDisplayCards(filterResult);
   }, [valueFilter, VacationsCards, buttonFavorites]);
 
 
   useEffect(() => {
-    data.jump(1);
-  }, [displayCards]);
+ 
+    if (valueFilter !== 2 || buttonFavorites) {
+      handleChange("",1)
+    }
+  }, [valueFilter, buttonFavorites]); 
+
+
 
 
 
   const handleFavoriteChange = () => {
+    console.log("Before Toggle:", buttonFavorites); 
     SetbuttonFavorites(!buttonFavorites);
   };
 
@@ -231,15 +242,15 @@ export function Vacations() {
                 <BottomNavigation
                   showLabels
                   value={valueFilter}
-                  onChange={async (event, newValue) => {
+                  onChange={async (_event, newValue) => {
                     SetValueFilter(newValue)
 
                   }}
                   sx={{
-                    flexGrow: 0.5, // Allow it to take more space dynamically
-                    minWidth: 0, // Prevent it from overflowing when space is limited
-                    '@media (max-width: 500px)': { // Media query for small screens (optional)
-                      flexGrow: 1, // Ensures it expands well on small screens
+                    flexGrow: 0.5,
+                    minWidth: 0, 
+                    '@media (max-width: 500px)': { 
+                      flexGrow: 1, 
                     },
                   }}
                 >
@@ -248,7 +259,7 @@ export function Vacations() {
                   <BottomNavigationAction label="All" icon={<AutoAwesomeMotionIcon />} />
                 </BottomNavigation>
 
-                {/* Second BottomNavigation (Favorites) */}
+                {/*/////////// Second BottomNavigation (Favorites)/////////// */}
                 <BottomNavigation
                   showLabels
                   value={buttonFavorites}
@@ -276,6 +287,8 @@ export function Vacations() {
             <Box sx={{ display: "flex", justifyContent: "center", marginTop: "2rem", flexWrap: "wrap", gap: "30px", marginBottom: "2rem" }}>
               {isLoading ? <CircularProgress />
                 : data.currentData().length !== 0 ?
+             
+                
                   <VacationsList vacations={data.currentData()}
                     usersFollow={usersFollow}
                     doSomething={
@@ -286,6 +299,7 @@ export function Vacations() {
                           }
                         : async (v: vacationCardUI): Promise<void> => {
                             await toggleFollow(v);
+                            
                           }
                     }
                     doSomethingAdmin={(v: vacationCardUI) => {
@@ -293,7 +307,7 @@ export function Vacations() {
                       SetIdToDelete(v.id)
                     }}
                   />
-                  : <h1>No Data</h1>}
+                  : <h1>No Data or reset filter by clicking on page 1</h1>}
 
             </Box>
 

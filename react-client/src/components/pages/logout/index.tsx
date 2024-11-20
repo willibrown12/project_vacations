@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../../context";
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -8,16 +8,12 @@ const defaultTheme = createTheme();
 
 export function Logout  () {
   const { setToken } = useAuth();
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
+
+ 
     setToken(null);
-    navigate("/home");
-  };
 
-  setTimeout(() => {
-    handleLogout();
-  },  2000);
+ 
 
 
 

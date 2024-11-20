@@ -11,14 +11,14 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+
 import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { useAuth, useUserContext } from '../../../context';
 import { jwtDecode } from 'jwt-decode';
 const pages = ['home', 'vacations', 'about us'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 
 
 
@@ -30,11 +30,15 @@ function ResponsiveAppBar() {
 
   const navigate = useNavigate();
   const { token ,setToken} = useAuth(); 
-  const { fullName  } = useUserContext();
+  const { fullName, role } = useUserContext();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   
+
+  const settings = role?['create-vacation', 'charts', 'Logout']:['Logout']
+
+
   useEffect(() => {
     const checkTokenExpiration = () => {
       if (!token) {
@@ -86,24 +90,13 @@ function ResponsiveAppBar() {
     <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+        <Box
+  component="img"
+  src="/images/—Pngtree—summer holiday_3674815.png"
+  alt="Logo"
+  sx={{ display: { xs: 'none', md: 'flex',  width: 90,height:70}, marginRight: 1 }}
+/>
+         
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -142,9 +135,15 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Box 
+  component="img"
+  src="/images/—Pngtree—summer holiday_3674815.png"
+  alt="Logo"
+  sx={{ display: {xs: 'flex', md: 'none' ,  width: 90,height:70}, marginRight: 1 }}
+/>
+         
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component="a"
             href="#app-bar-with-responsive-menu"
@@ -153,13 +152,13 @@ function ResponsiveAppBar() {
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
-              fontWeight: 700,
+              fontWeight: 600,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+      
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (

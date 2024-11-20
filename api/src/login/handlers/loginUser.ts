@@ -1,27 +1,27 @@
 import { loginType } from "..";
-import { getConnection } from "../../database"
+import { getConnection } from "../../database/connection"
 import bcrypt from 'bcryptjs';
 import { userType } from "../../register";
 
 
 
 
-type loginRoleType={authentication:boolean, role?:string ,full_name?:string,idUser?:number}
+type loginRoleType = { authentication: boolean, role?: string, full_name?: string, idUser?: number }
 
-export async function loginUser( user: loginType): Promise<loginRoleType> {
-  
+export async function loginUser(user: loginType): Promise<loginRoleType> {
+
     const connection = await getConnection();
     const query = `SELECT * FROM vacations.users WHERE email =?`
-    const foundUser = await connection?.execute(query,[user.email.toLowerCase()])
-   // @ts-ignore
+    const foundUser = await connection?.execute(query, [user.email.toLowerCase()])
+    // @ts-ignore
 
-    const result:Array<userType>=foundUser[0]
-    if (result.length=== 0) return {authentication:false,};
+    const result: Array<userType> = foundUser[0]
+    if (result.length === 0) return { authentication: false, };
 
     const storedHashedPassword = result[0].password;
     const isPasswordValid = await bcrypt.compare(user.password, storedHashedPassword);
-    const fullName =result[0].first_name+" "+result[0].last_name;
-    return {authentication:isPasswordValid, role:result[0].role,full_name:fullName ,idUser:result[0].id};
+    const fullName = result[0].first_name + " " + result[0].last_name;
+    return { authentication: isPasswordValid, role: result[0].role, full_name: fullName, idUser: result[0].id };
 }
 
 

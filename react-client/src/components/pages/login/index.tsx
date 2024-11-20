@@ -12,7 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { loginApi } from './service';
 import { useState } from 'react';
-import  backgroundImage from "../../../asset/images/backroundImage.jpg";
+import  backgroundImage from "/images/backroundImage.jpg";
 
 import { CircularProgress, InputLabel } from '@mui/material';
 import { useAuth } from '../../../context';
@@ -28,9 +28,9 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [EmailInput, setEmailInput] = useState('michael.smith@example.com');
+  const [EmailInput, setEmailInput] = useState('');
   const [inputError, setInputError] = useState({ isError: false, errorMessage: "" });
-  const [PasswordInput, setPasswordInput] = useState('BlueSky22@');
+  const [PasswordInput, setPasswordInput] = useState('');
 
   const handleSubmit = async () => {
     try {
@@ -42,11 +42,15 @@ export default function LoginPage() {
         console.log(result.token);
         
       }
-      console.log(result);
+     
     } catch (error: any) {
+      if (error.response.data.error==="something went wrong") {
+       alert("something went wrong");
+        
+      }else{
       console.log(error);
       setInputError({ isError: true, errorMessage: "email or password is incorrect" });
-    } finally {
+    }} finally {
       setIsLoading(false);
     }
   };

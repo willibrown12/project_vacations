@@ -1,5 +1,5 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useAuth } from "../context";
+
 
 import { Home } from "../components/pages/home";
 import RegistrationForm from "../components/pages/register";
@@ -9,11 +9,16 @@ import LoginPage from "../components/pages/login";
 import { ProtectedRoute } from "./protectedRoutes";
 import Logout from "../components/pages/logout";
 import VacationForm from "../components/pages/vacationsEdit";
+import CreateVacationForm from "../components/pages/createVacation";
+import StatisticsPage from "../components/pages/charts/charts";
+import AccordionExpandIcon from "../components/pages/about-us/aboutus";
+import { AdminProtector } from "../components/container/adminRouteProtector";
+import { LoggedInAlready } from "../components/container/loggedinAlready";
 
 
 
 export function RoutesArray(){
-  const { token } = useAuth();
+  
 
   // Define public routes accessible to all users
   const routesForPublic = [
@@ -31,7 +36,7 @@ export function RoutesArray(){
     },
     {
       path: "/aboutus",
-      element: <div>About Us</div>,
+      element: <AccordionExpandIcon/>,
     },
   ];
 
@@ -47,10 +52,7 @@ export function RoutesArray(){
             element: <Vacations />
            
         },
-        {
-          path: "/profile",
-          element: <div>User Profile</div>,
-        },
+       
         {
             path: "/logout",
             element:  <Logout />,
@@ -58,24 +60,34 @@ export function RoutesArray(){
            {
             path: "Vacations/edit",
             label: "Vacations_edit",
-            element: <VacationForm />
+            element: <AdminProtector><VacationForm /> </AdminProtector>
            
-        },
+        }, {
+          path: "create-vacation",
+          label: "create-vacation",
+          element:<AdminProtector> <CreateVacationForm /></AdminProtector>
+         
+      },{
+        path: "charts",
+        label: "charts",
+        element: <StatisticsPage />
+       
+    }
       ],
     },
   ];
-
+  
   // Define routes accessible only to non-authenticated users
   const routesForNotAuthenticatedOnly = [
     
     {
       path: "/login",
-      element:<LoginPage/>,
+      element:<LoggedInAlready><LoginPage/></LoggedInAlready>,
     },
     {
         path: "register",
         label: "Register",
-        element: <RegistrationForm />,
+        element: <LoggedInAlready><RegistrationForm /></LoggedInAlready>,
     }
   ];
 
@@ -86,7 +98,7 @@ export function RoutesArray(){
       element: <ResponsiveAppBar />, // Main layout component
       children: [
         ...routesForPublic,
-        ...(!token ? routesForNotAuthenticatedOnly : []),
+        ...(routesForNotAuthenticatedOnly ),
         ...routesForAuthenticatedOnly,
       ],
     },
