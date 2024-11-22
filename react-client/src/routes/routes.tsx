@@ -20,7 +20,7 @@ import { LoggedInAlready } from "../components/container/loggedinAlready";
 export function RoutesArray(){
   
 
-  // Define public routes accessible to all users
+  
   const routesForPublic = [
     {
         path: "/",
@@ -40,11 +40,11 @@ export function RoutesArray(){
     },
   ];
 
-  // Define routes accessible only to authenticated users
+
   const routesForAuthenticatedOnly = [
     {
       path: "/",
-      element: <ProtectedRoute />, // Wrap the component in ProtectedRoute
+      element: <ProtectedRoute />,
       children: [
         {
             path: "Vacations",
@@ -77,7 +77,7 @@ export function RoutesArray(){
     },
   ];
   
-  // Define routes accessible only to non-authenticated users
+
   const routesForNotAuthenticatedOnly = [
     
     {
@@ -91,11 +91,11 @@ export function RoutesArray(){
     }
   ];
 
-  // Combine and conditionally include routes based on authentication status
+
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ResponsiveAppBar />, // Main layout component
+      element: <ResponsiveAppBar />,
       children: [
         ...routesForPublic,
         ...(routesForNotAuthenticatedOnly ),
@@ -104,7 +104,7 @@ export function RoutesArray(){
     },
   ]);
 
-  // Provide the router configuration using RouterProvider
+
   return <RouterProvider router={router} />;
 };
 

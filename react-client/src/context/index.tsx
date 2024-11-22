@@ -35,7 +35,7 @@ const userContext = createContext<userType>({} as userType)
 const editContext = createContext<editVacationType>({} as editVacationType)
 
 export function ContextWrapper({ children }: any) {
-    // State to hold the authentication token
+   
     const [token, setTokenState] = useState<string | null>(localStorage.getItem("token"));
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [full_Name, setFullName] = useState<string>("");
@@ -52,16 +52,16 @@ export function ContextWrapper({ children }: any) {
     if (token) {
         try {
             const decoded: DecodedToken = jwtDecode(token);
-            setFullName(decoded.fullName); // Set the full name from the token
-            setIsAdmin(decoded.role === "admin"); // Set admin status based on the role
+            setFullName(decoded.fullName); 
+            setIsAdmin(decoded.role === "admin"); 
            
-            axios.defaults.headers.common["Authorization"] = token; // Set the Authorization header
+            axios.defaults.headers.common["Authorization"] = token;
         } catch (error) {
             console.error("Failed to decode token:", error);
-            // Handle error (e.g., clear token, redirect to login, etc.)
+           
         }
     } else {
-        // If there is no token, clear auth-related states
+       
         setFullName("");
         setIsAdmin(false);
         
@@ -118,7 +118,7 @@ export function ContextWrapper({ children }: any) {
         }
     }, [token]);
 
-    // Memoized value of the authentication context
+    
     const contextValuetype: any = useMemo(
         () => ({
             token,
@@ -131,7 +131,6 @@ export function ContextWrapper({ children }: any) {
     const userContextValue = { role: isAdmin, fullName: full_Name};
     const editContextValue = { editVacation, seteditVacation };
 
-    // Provide the authentication context to the children components
     return (
         <AuthContext.Provider value={contextValuetype}>
             <userContext.Provider value={userContextValue}>

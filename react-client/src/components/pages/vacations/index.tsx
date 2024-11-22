@@ -145,7 +145,7 @@ export function Vacations() {
   const data = usePagination(displayCards, PER_PAGE);
 
   const handleChange = (_e: any, p: any) => {
-    console.log();
+   
     
     setPage(p);
     data.jump(p);
@@ -307,7 +307,7 @@ export function Vacations() {
                       SetIdToDelete(v.id)
                     }}
                   />
-                  : <h1>No Data or reset filter by clicking on page 1</h1>}
+                  : <h1>No Data</h1>}
 
             </Box>
 
