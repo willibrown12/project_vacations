@@ -1,4 +1,4 @@
-import { getConnection } from "../../database";
+import { getConnection } from "../../database/connection";
 
 
 export async function deleteUser(Id: number) {

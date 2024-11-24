@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express"
 import { loginUser,  } from "./handlers/loginUser"
 import jwt from "jsonwebtoken";
-import { z, } from "zod"
+import { loginSchema } from "./handlers/zodScheme/loginSchema";
+
 
 
 
@@ -46,15 +47,6 @@ export type loginType ={
   }
   
   
-  const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-  const emailSchema = z.string().email().min(15)
-  const passwordSchema = z.string().regex(passwordRegex)
-
-
-const loginSchema = z.object({
-    email: emailSchema,
-    password: passwordSchema,
-})
 
 
 

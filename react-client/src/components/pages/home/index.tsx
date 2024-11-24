@@ -1,4 +1,4 @@
-import { Button, CssBaseline, Grid, Paper } from "@mui/material";
+import { Button, CircularProgress, CssBaseline, Grid } from "@mui/material";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -13,7 +13,7 @@ import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
 import Typography from '@mui/joy/Typography';
 
-import  backgroundImage from "../../../asset/images/backroundImage.jpg";
+import  backgroundImage from "/images/backroundImage.jpg";
 import { useAuth } from "../../../context";
 
 
@@ -67,63 +67,61 @@ export function Home() {
 
 
 
-  const settings = {
-    className: "center",
-    
-    infinite: true,
-    centerPadding: "60px",
-    slidesToShow: 4,
-    swipeToSlide: true,
-    afterChange: function (index:number) {
-      console.log(
-        `Slider Changed to: ${index + 1}, background: #222; color: #bada55`
-      );
-    },
-    responsive: [
-      {
-        breakpoint: 2500, // width to change options
-        settings: {
-          slidesToShow: 5,
-          slidesToScroll: 5,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 1800, // width to change options
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 1024, // width to change options
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2
-        }
-      }
-    ]
-  };
+      const settings = {
+        className: "center",
+      
+        infinite: true,
+        centerPadding: "60px",
+        slidesToShow: 4,
+        swipeToSlide: true,
+        afterChange: function (index: number) {
+          console.log(`Slider Changed to: ${index + 1}, background: #222; color: #bada55`);
+        },
+        responsive: [
+          {
+            breakpoint: 2200, 
+            settings: {
+              slidesToShow: 5,
+              slidesToScroll: 5,
+              infinite: true,
+              dots: true
+            }
+          },
+          {
+            breakpoint: 1800,
+            settings: {
+              slidesToShow: 4,
+              slidesToScroll: 4,
+              infinite: true,
+              dots: true
+            }
+          },
+          {
+            breakpoint: 1024, 
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 3,
+              infinite: true,
+              dots: true
+            }
+          },
+          {
+            breakpoint: 600, 
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 2,
+              initialSlide: 2
+            }
+          }
+        ]
+      };
 
   return (
     <Grid
       container
     
       sx={{
-        
+        height:" 100vh",
         paddingTop:"50px",
         paddingBottom:"50px",
        gap:4,
@@ -173,7 +171,7 @@ export function Home() {
           alignItems: "center",
         }}
       >
-        <div style={{ width: "100%", maxWidth: "90%"}}>
+       {isLoading? <LoadingLogin/>:<div style={{ width: "100%", maxWidth: "90%"}}>
           <h1>Popular places</h1>
           <Slider {...settings}>
       {homeCards.map((c) => (
@@ -181,9 +179,9 @@ export function Home() {
       ))}
     </Slider>
           <div style={{display:"flex" ,width: "100%", justifyContent:"flex-end"}}>
-          <Button  onClick={() => navigate('go to vacations')} >go to vacations</Button>
+          <Button  onClick={() => navigate('/vacations')} >go to vacations</Button>
           </div>
-        </div>
+        </div>}
         
       </Grid>
       <Grid   xs={12} md={10}  item sx={{justifyContent: "center",alignItems: "center",display:"flex"}}>
@@ -220,7 +218,7 @@ export function Home() {
         </Typography>
         <Buttonjoy
           variant="outlined"
-          
+          onClick={() => navigate("/aboutus")}
           sx={{
             color:"white",
             '--variant-borderWidth': '2px',
@@ -245,18 +243,7 @@ export function Home() {
           Hopefully, we have the answers for you in our FAQ
           </Typography>
         </CardContent>
-        <Buttonjoy
-          variant="outlined"
-          color="primary"
-          sx={{
-            '--variant-borderWidth': '2px',
-            borderRadius: 40,
-            borderColor: 'primary.500',
-            mx: 'auto',
-          }}
-        >
-          See FAQ
-        </Buttonjoy>
+       
       </CardContent>
     </Card>
 
@@ -267,3 +254,6 @@ export function Home() {
   );
 }
 
+function LoadingLogin() {
+  return <span><CircularProgress /> Please wait ...</span>;
+}

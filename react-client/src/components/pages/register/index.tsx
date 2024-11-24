@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { z } from "zod"
 import { CircularProgress, InputLabel, Tooltip } from '@mui/material';
 import { registerApi } from './service';
-import backgroundImage from "../../../asset/images/backroundImage.jpg";
+import  backgroundImage from "/images/backroundImage.jpg";
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 const defaultTheme = createTheme();
@@ -128,7 +128,8 @@ export default function RegistrationForm() {
               <InputLabel style={{ color: "#D32F2E" }}>
                 {inputError.errorMessage}
               </InputLabel>
-              {/* First Name and Last Name  */}
+              {/* //////////////////////First Name and Last Name  //////////////////////////////////////////*/}
+
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -156,7 +157,8 @@ export default function RegistrationForm() {
                 </Grid>
               </Grid>
 
-              {/* Email Field */}
+              {/*///////////////////////////////Email Field /////////////////////*/}
+
               <TextField
                 margin="normal"
                 onBlur={isEmailValid}
@@ -183,7 +185,7 @@ export default function RegistrationForm() {
                   type="password"
                 />
               </Tooltip>
-              {/* Submit Button */}
+              {/*///////////////// Submit Button ////////////////////////*/}
               {isLoading ? (
                 <LoadingLogin />
               ) : (

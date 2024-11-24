@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 export type vacationCardApi = {
-  Title: any;
+  
   id: number;
   country: string;
   city: string;
@@ -49,6 +49,8 @@ export async function SendToApiVacations(token: string) {
 
     }
   })
+  
+  
 
 
 
@@ -108,37 +110,21 @@ export type FollowType = {
 }
 
 
+export async function SendToApiDelete(token: string,id:number) {
+  if (Number.isNaN(id)) {
+    throw new Error ("error cant delete data")
+  }
 
+  const url = `http://localhost:3000/vacations/${id}`;
 
-export async function filterdataApi(token: string,value:number) {
-  const sendvalue = value === 1 ? "favorites" : value === 2 ? "activeNow" : "notactive";
+  const headers = {Authorization: token } 
 
-
-  const url = `http://localhost:3000/vacations/filter/${sendvalue}`;
-
-  const headers = token ? { Authorization: token } : {};
-
-  const result = await axios.get<{ vacations: vacationCardApi[] }>(url, { headers })
-
-
-
-  const data = result?.data?.vacations.map((c: vacationCardApi) => {
-    return {
-      id: c.id,
-      country: c.country,
-      city: c.city,
-      description: c.description,
-      start_date: c.start_date,
-      end_date: c.end_date,
-      price: c.price,
-      followers_count: c.followers_count,
-      image_url: c.image_url
-
-    }
-  })
+  const result = await axios.delete(url, { headers })
 
 
 
 
-  return data;
+
+  return result;
 }
+

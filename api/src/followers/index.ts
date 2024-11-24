@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { getFollowers } from "./handlers/getFollowers";
 import getTokenFromHeaders from "../middleware/handlers/getTokenFromHeader";
 import { followVacation, } from "./handlers/followVacation";
-import { deleteFollowVacation } from "./handlers/deleteVacation";
+import { deleteFollowVacation } from "./handlers/unfolllowVacation";
 
 
 const router = express.Router();
@@ -23,8 +23,9 @@ router.get("/", async (req, res, next) => {
     const data = await getFollowers(decoded.idUser);
     res.json({ Followers: data });
   } catch (error) {
+    console.log(error)
     res.send("Something went wrong");
-  }jwtDecode
+  }
 });
 
 
@@ -33,7 +34,6 @@ router.get("/", async (req, res, next) => {
 
 router.post("/:id", async (req, res, next) => {
   try {
-    console.log("post");
     const token = getTokenFromHeaders(req);
     const decoded :TokenPayload= jwtDecode(token);
     const result = await followVacation(+req.params.id,decoded.idUser);
