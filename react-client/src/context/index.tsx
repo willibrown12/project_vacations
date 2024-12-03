@@ -1,16 +1,10 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+
 import { vacationCardUI } from "../components/pages/vacations/vacationsList";
 
-type TokenPayload = {
-    fullName: string
-    role: string;
-    idUser:number
-};
 
 
-type DecodedToken = TokenPayload & { exp: number };
 
 type tokenType = {
     token: string,
@@ -18,7 +12,10 @@ type tokenType = {
 }
 
 type userType = {
- 
+    id:number
+    setId: (id: number ) => void;
+    setIsAdmin: (role: boolean ) => void;
+    setFullName : (fullName: string ) => void;
     role: boolean,
     fullName: string
 }
@@ -37,86 +34,71 @@ const editContext = createContext<editVacationType>({} as editVacationType)
 export function ContextWrapper({ children }: any) {
    
     const [token, setTokenState] = useState<string | null>(localStorage.getItem("token"));
+    const [id, setId] = useState<number>(localStorage.getItem("idUser") ? Number(localStorage.getItem("idUser")) : 0);
+
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [full_Name, setFullName] = useState<string>("");
+   
     const [editVacation, seteditVacation] = useState<vacationCardUI>({} as vacationCardUI);
    
- 
-    if(localStorage.getItem("token") && token===undefined){
-    const decoded: TokenPayload = jwtDecode(token);
-    setFullName(decoded.fullName);
-  }
-  
-
-  useEffect(() => {
-    if (token) {
-        try {
-            const decoded: DecodedToken = jwtDecode(token);
-            setFullName(decoded.fullName); 
-            setIsAdmin(decoded.role === "admin"); 
-           
-            axios.defaults.headers.common["Authorization"] = token;
-        } catch (error) {
-            console.error("Failed to decode token:", error);
-           
-        }
-    } else {
-       
-        setFullName("");
-        setIsAdmin(false);
-        
-        delete axios.defaults.headers.common["Authorization"];
-    }
-}, [token]);
 
 
-    const isTokenValid = (token: string | null): boolean => {
-        if (!token) return false;
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            response => response,  // If the request is successful, just return the response
+            error => {
+                if (error.response && error.response.status === 401) {
+                    // Clear the token and user data from localStorage
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("idUser");
+                    
+                    // Redirect to login page
+                    window.location.href = "/login";
+                }
+                return Promise.reject(error);
+            }
+        );
 
-        let decodedToken:DecodedToken;
-        try {
-            decodedToken = jwtDecode<any & { exp: number }>(token);
-        } catch (error) {
-            console.error("Failed to decode token:", error);
-            return false;
-        }
-
-        const currentDate = new Date();
-        return (decodedToken.exp * 1000) > currentDate.getTime();
-    };
-
-
-
-    const setToken = (newToken: string | null) => {
-        setTokenState(newToken);
-        
-        if (newToken && isTokenValid(newToken)) {
-            const decoded: TokenPayload = jwtDecode(newToken);
-            setFullName(decoded.fullName);
-            setIsAdmin(decoded.role === "admin");
-            axios.defaults.headers.common["Authorization"] = newToken;
-            localStorage.setItem("token", newToken);
-        } else {
-       
-            setFullName("");
-            setIsAdmin(false);
-            delete axios.defaults.headers.common["Authorization"];
-            localStorage.removeItem("token");
-            window.location.href = "/login"; 
-        }
-    };
+        // Cleanup interceptor on unmount
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, []);
 
 
 
     useEffect(() => {
         if (token) {
+          
             axios.defaults.headers.common["Authorization"] = token;
-            localStorage.setItem('token', token);
+            localStorage.setItem("token", token);
+            localStorage.setItem("idUser", id.toString());
         } else {
             delete axios.defaults.headers.common["Authorization"];
-            localStorage.removeItem('token')
+            localStorage.removeItem("token");
+            localStorage.removeItem("idUser");
         }
     }, [token]);
+
+   
+
+
+const setToken = (newToken: string | null) => {
+    setTokenState(newToken);
+
+    if (newToken) {
+        axios.defaults.headers.common["Authorization"] = newToken;
+        localStorage.setItem("token", newToken);
+        localStorage.setItem("idUser", id.toString());
+    } else {
+        delete axios.defaults.headers.common["Authorization"];
+        localStorage.removeItem("token");
+        localStorage.removeItem("idUser");
+        window.location.href = "/login"; 
+    }
+};
+
+
 
     
     const contextValuetype: any = useMemo(
@@ -128,7 +110,7 @@ export function ContextWrapper({ children }: any) {
     );
 
 
-    const userContextValue = { role: isAdmin, fullName: full_Name};
+    const userContextValue = { role: isAdmin, fullName: full_Name , setId, id,setFullName ,setIsAdmin };
     const editContextValue = { editVacation, seteditVacation };
 
     return (

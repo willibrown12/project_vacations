@@ -349,7 +349,7 @@ export function Vacations() {
                 "Vacation deleted successfully") {
                 const findindex = VacationsCards.findIndex(i => i.id === idToDelete)
                 if (findindex !== -1) {
-                  displayCards.splice(findindex, 1)
+                  VacationsCards.splice(findindex, 1)
                 }
               } else { alert("something went wrong with deleting the vacation") }
             } catch (error) {

@@ -15,7 +15,7 @@ import { useState } from 'react';
 import  backgroundImage from "/images/backroundImage.jpg";
 
 import { CircularProgress, InputLabel } from '@mui/material';
-import { useAuth } from '../../../context';
+import { useAuth, useUserContext } from '../../../context';
 
 
 
@@ -25,6 +25,7 @@ const defaultTheme = createTheme();
 export default function LoginPage() {
   
   const { setToken } = useAuth();
+  const {  setId  }  = useUserContext()
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,9 +38,12 @@ export default function LoginPage() {
       setIsLoading(true);
       const result = await loginApi({ email: EmailInput, password: PasswordInput });
       if (result.token) {
+        console.log(result.idUser);
+        
+        setId(result.idUser)
         setToken(result.token);
         navigate("/home");
-        console.log(result.token);
+       
         
       }
      
