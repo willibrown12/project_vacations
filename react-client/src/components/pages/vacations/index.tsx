@@ -61,6 +61,9 @@ export function Vacations() {
   const [buttonFavorites, SetbuttonFavorites] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
+
+
+  // useEffect to fetch initial data 
   useEffect(() => {
     let isSetState = true;
     async function tableStart() {
@@ -89,6 +92,10 @@ export function Vacations() {
   }, []);
 
 
+
+
+// Function to toggle the follow/unfollow state of a vacation card.
+// It sends an API request to update the follow state and adjusts the local state accordingly.
 
   async function toggleFollow(card: vacationCardUI) {
     try {
@@ -153,7 +160,8 @@ export function Vacations() {
 
 
 
-
+// useEffect to handle filtering of vacation cards based on active, not active, or all.
+// Also applies a filter for favorite vacations if the button is toggled.
   useEffect(() => {
 
     setPage(1);
@@ -185,7 +193,8 @@ export function Vacations() {
     setDisplayCards(filterResult);
   }, [valueFilter, VacationsCards, buttonFavorites]);
 
-
+// useEffect to reset the page to 1 when the filter or favorites button changes.
+// Ensures the user is redirected to the first page of filtered results.
   useEffect(() => {
  
     if (valueFilter !== 2 || buttonFavorites) {
@@ -349,7 +358,7 @@ export function Vacations() {
                 "Vacation deleted successfully") {
                 const findindex = VacationsCards.findIndex(i => i.id === idToDelete)
                 if (findindex !== -1) {
-                  displayCards.splice(findindex, 1)
+                  VacationsCards.splice(findindex, 1)
                 }
               } else { alert("something went wrong with deleting the vacation") }
             } catch (error) {

@@ -16,7 +16,8 @@ import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { useAuth, useUserContext } from '../../../context';
-import { jwtDecode } from 'jwt-decode';
+
+import { SendToApiID } from './service';
 const pages = ['home', 'vacations', 'about us'];
 
 
@@ -29,45 +30,54 @@ function ResponsiveAppBar() {
   
 
   const navigate = useNavigate();
-  const { token ,setToken} = useAuth(); 
-  const { fullName, role } = useUserContext();
+  const { token } = useAuth(); 
+  const { fullName, role ,id,setFullName,setIsAdmin } = useUserContext();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   
 
-  const settings = role?['create-vacation', 'charts', 'Logout']:['Logout']
 
 
   useEffect(() => {
-    const checkTokenExpiration = () => {
-      if (!token) {
-        setIsLoggedIn(false);
-        return;
-      }
-
+    let isSetState = true
+    async function userStart() {
       try {
-        const decoded: any = jwtDecode(token);
-        const isExpired = decoded.exp * 1000 < Date.now();
-        if (isExpired) {
-          setToken(null); 
-        } else {
-          setIsLoggedIn(true); 
-        }
-      } catch (error) {
+        if (isSetState) {
+        if (!token) {
+                setIsLoggedIn(false);
+                return;
+              }else{setIsLoggedIn(true);
+
+                const user: any = await SendToApiID(token,id)
        
-        setToken(null); 
-      }
-    };
-
-    checkTokenExpiration();
-  }, [token, setToken]);
-  
-
+       
+          
+                setFullName(user.full_name);
+                if (user.role==="admin") {
+                  setIsAdmin(true);
+                }else{setIsAdmin(false);}
 
 
+              }
+
+        }
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        alert("Something went wrong while fetching user data.");
+      } 
+    }
+    userStart()
+    return () => {
+      isSetState = false;
+    }
+  }, [token,id])
 
 
+
+
+  const settings = role?['create-vacation', 'charts', 'Logout']:['Logout']
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };

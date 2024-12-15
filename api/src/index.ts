@@ -10,6 +10,7 @@ import { router as followersRouter } from "./followers"
 import bodyParser from "body-parser"
 import cors from "cors"
 import authenticate from "./middleware/authenticate"
+import { limiter } from "./middleware/ratelimiter"
 
 
 dotenv.config()
@@ -17,14 +18,8 @@ const app = express()
 console.log("Application Start")
 app.use(cors())
 app.use(bodyParser.json())
-
+app.use(limiter)
 app.get("/health-check", async (req: Request, res: Response, next) => {
-
-
-
-
-
-
 
     return res.json({ massage: "server is up" })
 })

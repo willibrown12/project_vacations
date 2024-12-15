@@ -5,6 +5,11 @@ function usePagination(data: Array<any>, itemsPerPage: number) {
 
   const maxPage = Math.ceil(data.length / itemsPerPage);
 
+
+
+  // Calculates and returns a slice of data for the current page.
+// `begin` is the starting index, and `end` is the exclusive end index.
+// Slices the data array to include only items for the current page.
   const currentData = () => {
     const begin = (currentPage - 1) * itemsPerPage;
     const end = begin + itemsPerPage;
@@ -27,3 +32,6 @@ function usePagination(data: Array<any>, itemsPerPage: number) {
 }
 
 export default usePagination;
+
+
+
