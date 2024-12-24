@@ -1,1 +1,1 @@
-git init
+Vacation Booking App
