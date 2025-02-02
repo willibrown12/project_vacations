@@ -1,4 +1,5 @@
-import axios from "axios";
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 
@@ -37,11 +38,10 @@ export type chartUi = {
 export async function SendToApiCharts(token: string) {
 
 
-  const url = `http://localhost:3000/vacations`;
 
   const headers = token ? { Authorization: token } : {};
 
-  const result = await axios.get<{ vacations: chartApi[] }>(url, { headers })
+  const result = await axiosInstance.get<{ vacations: chartApi[] }>("/vacations", { headers })
 
 
 

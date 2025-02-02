@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
       const data = await getVacations();
       res.json({ cards: data });
     } catch (error) {
-      res.send("Something went wrong");
+      next(error)
     }
   });
   

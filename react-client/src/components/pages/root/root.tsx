@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useEffect, useState } from "react"
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { useAuth, useUserContext } from '../../../context';
+import { useAuth,  useUserContext } from '../../../context';
 
 import { SendToApiID } from './service';
 const pages = ['home', 'vacations', 'about us'];
@@ -28,7 +28,7 @@ const pages = ['home', 'vacations', 'about us'];
 function ResponsiveAppBar() {
 
   
-
+ 
   const navigate = useNavigate();
   const { token } = useAuth(); 
   const { fullName, role ,id,setFullName,setIsAdmin } = useUserContext();

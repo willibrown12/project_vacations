@@ -1,30 +1,36 @@
 import { loginType } from "..";
-import { getConnection } from "../../database/connection"
-import bcrypt from 'bcryptjs';
+import pool from "../../database/connection";
+import bcrypt from "bcryptjs";
 import { userType } from "../../register";
 
-
-
-
-type loginRoleType = { authentication: boolean, role?: string, full_name?: string, idUser?: number }
+type loginRoleType = {
+  authentication: boolean;
+  role?: string;
+  full_name?: string;
+  idUser?: number;
+};
 
 export async function loginUser(user: loginType): Promise<loginRoleType> {
+  const query = `SELECT * FROM vacations.users WHERE email =?`;
+  const foundUser = await pool.query(query, [user.email.toLowerCase()]);
+  // @ts-ignore
 
-    const connection = await getConnection();
-    const query = `SELECT * FROM vacations.users WHERE email =?`
-    const foundUser = await connection?.execute(query, [user.email.toLowerCase()])
-    // @ts-ignore
+  const result: Array<userType> = foundUser[0];
+  if (result.length === 0) return { authentication: false };
 
-    const result: Array<userType> = foundUser[0]
-    if (result.length === 0) return { authentication: false, };
-
-    const storedHashedPassword = result[0].password;
-    const isPasswordValid = await bcrypt.compare(user.password, storedHashedPassword);
-    const fullName = result[0].first_name + " " + result[0].last_name;
-    return { authentication: isPasswordValid, role: result[0].role, full_name: fullName, idUser: result[0].id };
+  const storedHashedPassword = result[0].password;
+  const isPasswordValid = await bcrypt.compare(
+    user.password,
+    storedHashedPassword
+  );
+  const fullName = result[0].first_name + " " + result[0].last_name;
+  return {
+    authentication: isPasswordValid,
+    role: result[0].role,
+    full_name: fullName,
+    idUser: result[0].id,
+  };
 }
-
-
 
 // const emailPasswordMap = {
 //     "willi@gmail.com": "Vilibrown12!",
@@ -34,4 +40,3 @@ export async function loginUser(user: loginType): Promise<loginRoleType> {
 //     "olivia.brown@example.com": "StarryNight7#",
 //     "emily.johnson@example.com": "Sunset2024%"
 // };
-

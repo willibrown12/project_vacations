@@ -1,4 +1,6 @@
-import axios from "axios"
+
+import axiosInstance from "../../handlers/axiosUrlService";
+
 
 export type CreateVacationCard = {
     
@@ -13,11 +15,12 @@ export type CreateVacationCard = {
  
   }
   
-const BASE_URL = `http://localhost:3000`
+
 
 export async function createVacationApi(vacation: CreateVacationCard,token:string): Promise<{ message: string }> {
+   
     const headers = {Authorization: token } 
-    const result = await axios.post(`${BASE_URL}/vacations`,
+    const result = await axiosInstance.post(`vacations`,
         vacation,
         { headers})
     return result.data

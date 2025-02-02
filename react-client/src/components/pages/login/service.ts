@@ -1,4 +1,5 @@
-import axios from "axios"
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 
@@ -9,12 +10,11 @@ export type loginType ={
 
 
 
-const BASE_URL = `http://localhost:3000`
 
 export async function loginApi(user: loginType): Promise<{ message: string, token: string , idUser:number}> {
    
     
-    const result = await axios.post(`${BASE_URL}/login`,
+    const result = await axiosInstance.post(`/login`,
         user,
         { headers: { "content-type": "application/json" } })
         console.log(result);

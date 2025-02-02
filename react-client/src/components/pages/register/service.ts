@@ -1,4 +1,5 @@
-import axios from "axios"
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 export type userType = {
@@ -12,10 +13,10 @@ export type userType = {
   
   }
   
-const BASE_URL = `http://localhost:3000`
+
 
 export async function registerApi(user: userType): Promise<{ message: string }> {
-    const result = await axios.post(`${BASE_URL}/register`,
+    const result = await axiosInstance.post(`/register`,
         user,
         { headers: { "content-type": "application/json" } })
     return result.data

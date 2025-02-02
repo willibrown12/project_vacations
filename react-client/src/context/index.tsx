@@ -2,6 +2,7 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { vacationCardUI } from "../components/pages/vacations/vacationsList";
+import axiosInstance from "../components/handlers/axiosUrlService";
 
 
 
@@ -44,7 +45,7 @@ export function ContextWrapper({ children }: any) {
 
 
     useEffect(() => {
-        const interceptor = axios.interceptors.response.use(
+        const interceptor = axiosInstance.interceptors.response.use(
             response => response,  // If the request is successful, just return the response
             error => {
                 if (error.response && error.response.status === 401) {

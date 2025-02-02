@@ -1,4 +1,6 @@
-import axios from "axios";
+
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 export type homeCardApi = typeof homeTemplate
@@ -16,8 +18,8 @@ export type homeCardUI = {
 
 export async function SendToApiHome() {
    
-  const url = `http://localhost:3000/home`;
-    const result = await axios.get<{ cards:homeCardApi[]}>(url)
+    
+    const result = await axiosInstance.get<{ cards:homeCardApi[]}>("/home")
  
     
     const data= result?.data?.cards.map((c:homeCardUI) => {

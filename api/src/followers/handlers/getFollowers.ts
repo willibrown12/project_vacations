@@ -1,12 +1,9 @@
 import { query } from "express";
-import { getConnection } from "../../database/connection";
-
-
+import pool from "../../database/connection";
 
 export async function getFollowers(id: number) {
-    const connection = await getConnection();
-    const query = `SELECT idlocation FROM vacations.followers where iduser = ?`
-    const Vacations = await connection?.execute(query, [id])
-    const result = Vacations?.[0]
-    return result
+  const query = `SELECT idlocation FROM vacations.followers where iduser = ?`;
+  const Vacations = await pool.query(query, [id]);
+  const result = Vacations?.[0];
+  return result;
 }

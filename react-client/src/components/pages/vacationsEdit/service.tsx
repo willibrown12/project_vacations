@@ -1,4 +1,5 @@
-import axios from "axios"
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 export type vacationCardEdit = {
     
@@ -13,11 +14,11 @@ export type vacationCardEdit = {
  
   }
   
-const BASE_URL = `http://localhost:3000`
+
 
 export async function UpdateVactionApi(vacation: vacationCardEdit,token:string): Promise<{ message: string }> {
     const headers = {Authorization: token } 
-    const result = await axios.put(`${BASE_URL}/vacations/${vacation.id}`,
+    const result = await axiosInstance.put(`/vacations/${vacation.id}`,
         vacation,
         { headers})
     return result.data

@@ -1,19 +1,12 @@
-import { query } from "express";
-import { getConnection } from "../../database/connection";
-import { log } from "console";
-
-
+import pool from "../../database/connection";
 
 export async function getUserData(id: number) {
-    const connection = await getConnection();
-    const query = `SELECT CONCAT(first_name, ' ', last_name) AS full_name, role
+  const query = `SELECT CONCAT(first_name, ' ', last_name) AS full_name, role
 FROM vacations.users
-WHERE id = ?`
+WHERE id = ?`;
 
+  const Vacations = await pool.query(query, [id]);
+  const result = Vacations?.[0];
 
-    const Vacations = await connection?.execute(query, [id])
-    const result = Vacations?.[0]
-    
-    
-    return result
+  return result;
 }

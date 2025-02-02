@@ -3,10 +3,10 @@ services:
     image: client
     ports:
       - "4200:4200"
-  api:
-    image: vacation-api
-    ports:
-      - "3000:3000"
+  # api:
+  #   image: vacation-api
+  #   ports:
+  #     - "3000:3000"
   db:
     image: mysql
     restart: always

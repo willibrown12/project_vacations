@@ -1,12 +1,12 @@
 import { log } from "console";
-import { getConnection } from "../../database/connection";
+import  pool  from "../../database/connection";
 
 
 export async function ifUserExist(email: string) {
 
-    const connection = await getConnection();
+  
     const query = `SELECT * FROM vacations.users WHERE email =?`
-    const user = await connection?.execute(query, [email])
+    const user = await pool.query(query, [email])
     // @ts-ignore
 
     const result: any = user[0]

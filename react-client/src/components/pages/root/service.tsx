@@ -1,4 +1,5 @@
-import axios from "axios";
+
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 
@@ -17,13 +18,12 @@ export async function SendToApiID(token: string, id:number) {
    
     
 
-    const url = `http://localhost:3000/login/${id}`;
   
     
   
     const headers = token ? { Authorization: token } : {};
   
-    const result = await axios.get<{ user: userTypeApi }>(url, { headers })
+    const result = await axiosInstance.get<{ user: userTypeApi }>(`login/${id}`, { headers })
   
   
   

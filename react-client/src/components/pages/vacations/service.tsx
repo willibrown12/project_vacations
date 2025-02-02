@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "../../handlers/axiosUrlService";
 
 
 
@@ -25,11 +26,11 @@ export type vacationCardApi = {
 export async function SendToApiVacations(token: string) {
 
 
-  const url = `http://localhost:3000/vacations`;
+
 
   const headers = token ? { Authorization: token } : {};
 
-  const result = await axios.get<{ vacations: vacationCardApi[] }>(url, { headers })
+  const result = await axiosInstance.get<{ vacations: vacationCardApi[] }>("/vacations", { headers })
 
 
 
